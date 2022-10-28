@@ -1,0 +1,11 @@
+---
+- name: Python deps | Install compile time depdendencies
+  become: true
+  yum:
+    state: present
+    name:
+      - gcc
+      - openssl-devel
+      - bzip2-devel
+      - libffi-devel
+

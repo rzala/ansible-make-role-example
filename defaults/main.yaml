@@ -1,0 +1,33 @@
+---
+
+##
+# role main options
+##
+
+
+install_bear2_3_1: true
+
+versions:
+  bear2_3_1: "2.4.3"
+
+hashes:
+  bear2_3_1: "f671ab3ee5fee4ee72b0021fe8e1842c"
+
+##
+# fine grained settings
+##
+base_install_folder: "/usr/local"
+
+bear2_3_1:
+  version: "{{ versions.bear2_3_1 }}"
+  major_version: "2.4"
+  url: "https://github.com/rizsotto/Bear/archive/{{ versions.bear2_3_1 }}.tar.gz"
+  md5: "{{ hashes.bear2_3_1 }}"
+  tar_file: "/tmp/bear-{{ versions.bear2_3_1 }}.tar.bz2"
+  sources: "/tmp/Bear-{{ versions.bear2_3_1 }}"
+  install: "{{ base_install_folder }}/bear{{ versions.bear2_3_1 }}"
+  bin: "{{ base_install_folder }}/bin/bear"
+
+
+bear_data: "{{ bear2_3_1 }}"
+should_install: "{{ install_bear2_3_1 }}"

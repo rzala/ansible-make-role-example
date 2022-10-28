@@ -1,0 +1,44 @@
+---
+- name: Delete temp
+  file:
+    path: "{{ bear_data.sources }}"
+    state: absent
+
+- name: Delete temp
+  file:
+    path: "{{ bear_data.bin }}"
+    state: absent
+  when: installer_force|default(False)
+
+- name: "{{ bear_data.version }} | Check that {{ bear_data.version }} is still not installed"
+  become: true
+  stat: path="{{ bear_data.bin }} x"
+  register: already_installed
+  ignore_errors: True
+
+- name: "{{ bear_data.version }} | Download"
+  get_url:
+    url="{{ bear_data.url }}"
+    dest="{{ bear_data.tar_file }}"
+    checksum="md5:{{ bear_data.md5 }}"
+  when: should_install and not already_installed.stat.exists
+
+- name: "{{ bear_data.version }} | Uncompress"
+  unarchive:
+    src={{ bear_data.tar_file }}
+    dest=/tmp
+    copy=no
+    creates="{{ bear_data.sources }}"
+  when: should_install and not already_installed.stat.exists
+
+- name: "{{ bear_data.version }} | Compile and install"
+  become: true
+  command: "{{ item }}"
+  args:
+    chdir: "{{ bear_data.sources }}"
+  with_items:
+    - cmake .
+    - make all
+    - make install
+    - make check
+  when: should_install and not already_installed.stat.exists
